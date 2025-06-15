@@ -1,28 +1,66 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const CreatePost = () => {
   const navigate = useNavigate();
-  const [post, setPost] = React.useState({
+  const [post, setPost] = useState({
     title: '',
     desc: '',
     image: '',
   });
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/");
     }
-  });
+  }, [navigate]);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setPost(prev => ({ ...prev, [name]: value }));
+    setPost((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async e => {
+  const uploadImage = async (file) => {
+    if (!file) {
+      setError('Please choose image!');
+      return null;
+    }
+
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('key', import.meta.env.VITE_IMGBB_KEY);
+
+    try {
+      setUploading(true);
+      const response = await axios.post('https://api.imgbb.com/1/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setUploading(false);
+      setError(null);
+      return response.data.data.url;
+    } catch (err) {
+      setUploading(false);
+      setError('Failed to Upload image');
+      console.error(err);
+      return null;
+    }
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    const imageUrl = await uploadImage(file);
+    if (imageUrl) {
+      setPost((prev) => ({ ...prev, image: imageUrl }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
@@ -48,16 +86,16 @@ const CreatePost = () => {
           onSubmit={handleSubmit}
           className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow border-2 border-pink-600"
         >
-          <label className="block text-pink-600 font-bold mb-2">Image URL</label>
+          <label className="block text-pink-600 font-bold mb-2">Upload Image</label>
           <input
-            type="text"
-            name="image"
-            value={post.image}
-            onChange={handleChange}
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
             className="border border-pink-600 rounded w-full py-2 px-3 mb-5 text-pink-600 focus:outline-none focus:shadow-outline"
-            placeholder="Enter image URL"
             required
           />
+          {uploading && <p className="text-pink-600 mb-5">Uploading image....</p>}
+          {error && <p className="text-red-600 mb-5">{error}</p>}
           <div className="relative w-full h-80 bg-pink-400/30 mb-5 rounded-xl overflow-hidden">
             {post.image ? (
               <img
@@ -109,6 +147,7 @@ const CreatePost = () => {
                 hover:bg-pink-600
                 hover:text-white
               "
+              disabled={uploading}
             >
               Create Post
             </button>

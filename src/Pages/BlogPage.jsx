@@ -50,7 +50,7 @@ const BlogPage = ({ user }) => {
   }
 
   return (
-    <div className="w-full px-4 py-8 space-y-6">
+    <div className="w-[1000px] mx-auto px-4 py-8 space-y-6">
       <div className="flex flex-col sm:flex-row sm:justify-between items-center max-w-md mx-auto mb-8 space-y-4 sm:space-y-0 sm:space-x-4">
         <input
           type="text"
@@ -77,7 +77,7 @@ const BlogPage = ({ user }) => {
           key={post._id}
           className="bg-pink-50 rounded-lg shadow-md overflow-hidden transform transition-transform duration-300 hover:scale-105 w-full"
         >
-          <img src={post.image} alt={post.title} className="w-full h-60 object-cover" />
+          <img src={post.image} alt={post.title} className="w-full h-80 object-cover" />
           <div className="p-6 text-center">
             <h2 className="text-2xl font-semibold mb-3 text-pink-600">{post.title}</h2>
             <h2 className="text-lg font-semibold mb-3 text-pink-600">By {post.createdBy.name}</h2>
