@@ -107,6 +107,10 @@ const BlogPage = ({ user }) => {
           </div>
         </div>
       ))}
+
+      {
+        filteredPosts.length === 0 && <h2 className="text-pink-600 text-2xl text-center mt-5">No Posts Found</h2>
+      }
     </div>
   );
 };
