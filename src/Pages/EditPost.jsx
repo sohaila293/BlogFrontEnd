@@ -59,7 +59,6 @@ const EditPost = ({ user }) => {
     }
   };
 
-  // Handle image file selection
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     const imageUrl = await uploadImage(file);
@@ -101,7 +100,6 @@ const EditPost = ({ user }) => {
             accept="image/*"
             onChange={handleImageChange}
             className="w-full px-4 py-2 border-2 border-pink-600 rounded text-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500"
-            required
           />
           {uploading && <p className="text-pink-600 mt-2">Uploading image...</p>}
           {post.image && (
