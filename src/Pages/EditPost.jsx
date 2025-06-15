@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const port = '3000';
-const BASE_URL = `http://localhost:${port}`;
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const EditPost = ({ user }) => {
   const { id } = useParams();
